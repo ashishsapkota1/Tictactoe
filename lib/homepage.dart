@@ -16,12 +16,16 @@ class _HomePageState extends State<HomePage> {
   int oScore = 0;
   int xScore = 0;
   int filledBoxes = 0;
+  int drawcount = 0;
 
  void Newgame(){
    setState(() {
    oScore = 0;
+   drawcount = 0;
    xScore = 0;
-   displayElement = ['', '', '', '', '', '', '', '', ''];
+   for(int i=0; i<9;i++){
+     displayElement[i]='';
+   }
    filledBoxes = 0;
    });
  }
@@ -92,13 +96,15 @@ void checkWinner() {
            builder: (BuildContext context){
              return AlertDialog(
                title: Text('player $win  is Winner'),
+               backgroundColor: Colors.grey[600],
+               titleTextStyle: TextStyle(color: Colors.red[600],fontWeight: FontWeight.bold),
                actions: [
                  TextButton(onPressed: (){
                    clearBoard();
                    Navigator.of(context).pop();
                  },
                      child: Text('play again',
-                         style: TextStyle(fontWeight: FontWeight.bold,color:Colors.red[400])
+                         style: TextStyle(fontWeight: FontWeight.bold,color:Colors.red[400] )
                      ),
                  )
                ],
@@ -112,11 +118,14 @@ void checkWinner() {
          oScore++;
     }
    }
+   //for draw
    void showDraw(){
    showDialog(context: context,
        builder: (BuildContext){
      return AlertDialog(
        title: Text('the game is draw'),
+       backgroundColor: Colors.grey[600],
+       titleTextStyle: TextStyle(color: Colors.red[600],fontWeight: FontWeight.bold),
        actions: [
          TextButton(onPressed: (){
            clearBoard();
@@ -128,7 +137,9 @@ void checkWinner() {
        ],
      );
    }
-   );}
+   );
+ drawcount++;
+ }
 
 
   @override
@@ -178,8 +189,27 @@ void checkWinner() {
                       ],
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Draw',
+                          style: TextStyle(fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        Text(
+                          drawcount.toString(),
+                          style: TextStyle(fontSize: 20,color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
+
             ),
           ),
           Expanded(
@@ -193,7 +223,7 @@ void checkWinner() {
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
                     onTap: () {
-                      _tapped(index);
+                      tapped(index);
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -210,8 +240,8 @@ void checkWinner() {
           ),
           Expanded(
 
-            // Button for Clearing the Enter board
-            // as well as Scoreboard to start allover again
+            // Button for Clearing the board
+
               child: Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -235,7 +265,7 @@ void checkWinner() {
 
 // filling the boxes when tapped with X
 // or O respectively and then checking the winner function
-  void _tapped(int index) {
+  void tapped(int index) {
     setState(() {
       if (oTurn && displayElement[index] == '') {
         displayElement[index] = 'O';
